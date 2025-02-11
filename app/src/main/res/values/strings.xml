@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">Recipes_App</string>
+    <string name="app_name">Cook_Bites</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="no_member">Not a member?</string>
+    <string name="create_account">Create an account</string>
+    <string name="yes_member">Already have an account?</string>
+    <string name="banner_phrase">Your culinary journey starts here!</string>
+    <string name="saved_recipes">Total</string>
+    <string name="recipes">Recipes</string>
+    <string name="favorites">Favorites</string>
+    <string name="time">By time</string>
+    <string name="my_account">My account</string>
+    <string name="log_out">Log Out</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="name_recipe">Recipe Name</string>
+    <string name="preparation_time">Preparation time (min):</string>
+    <string name="add_favorites">Add to favorites?</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="add_ingredients">Add all ingredients</string>
+    <string name="preparation_recipe">Preparation</string>
+    <string name="all_ingredients">Ingredients</string>
+    <string name="description_recipe">Write how you prepare this delicious recipe....</string>
+    <string name="save_recipe">Save</string>
 </resources>
