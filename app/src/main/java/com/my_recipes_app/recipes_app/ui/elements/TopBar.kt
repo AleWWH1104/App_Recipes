@@ -25,7 +25,7 @@ fun topAppBar(){
         verticalAlignment = Alignment.CenterVertically
     ){
         IconButton(onClick = {}) {
-            Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu", modifier = Modifier.size(50.dp))
+            Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu", modifier = Modifier.size(50.dp), tint = Color.White)
         }
     }
 }
