@@ -18,7 +18,7 @@ data class RecipeEntity(
 data class UsersWithRecipes(
     @Embedded val user: UserEntity,
     @Relation(
-        parentColumn = "id_user",
+        parentColumn = "userId",
         entityColumn = "userOwner"
     )
     val recipes: List<RecipeEntity>

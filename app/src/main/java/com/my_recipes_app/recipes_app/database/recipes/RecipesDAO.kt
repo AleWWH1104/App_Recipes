@@ -15,7 +15,7 @@ interface RecipesDAO {
     fun getRecipeById(recipeId: Int): Flow<RecipeEntity>
 
     @Query("SELECT * FROM recipesDB WHERE userOwner = :userId")
-    fun getRecipesByUser(userId: Int): List<RecipeEntity>
+    fun getRecipesByUser(userId: Int): Flow<List<RecipeEntity>>
 
     @Query("SELECT * FROM recipesDB WHERE userOwner = :userId AND isFavorite = 1")
     fun getFavoriteRecipesByUser(userId: Int): Flow<List<RecipeEntity>>
@@ -25,4 +25,7 @@ interface RecipesDAO {
 
     @Query("UPDATE recipesDB SET isFavorite = :isFavorite WHERE recipeId = :recipeId")
     suspend fun updateFavoriteStatus(recipeId: Int, isFavorite: Boolean)
+
+    @Query("SELECT COUNT(*) FROM recipesDB WHERE userOwner = :userId")
+    fun getRecipeCountByUser(userId: Int): Flow<Int>
 }
