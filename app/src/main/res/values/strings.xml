@@ -21,8 +21,10 @@
     <string name="add_favorites">Add to favorites?</string>
     <string name="upload_photo">Upload photo</string>
     <string name="add_ingredients">Add all ingredients</string>
+    <string name="add">Add</string>
     <string name="preparation_recipe">Preparation</string>
     <string name="all_ingredients">Ingredients</string>
     <string name="description_recipe">Write how you prepare this delicious recipe....</string>
     <string name="save_recipe">Save</string>
+    <string name="delete_recipe">Delete recipe</string>
 </resources>
