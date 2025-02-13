@@ -18,17 +18,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.my_recipes_app.recipes_app.ui.elements.topAppBar
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 import com.my_recipes_app.recipes_app.R
+import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.elements.addIngredientField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addRecipeScreen(){
+fun addRecipeScreen(navController: NavController, user: UserEntity){
     var checked by remember { mutableStateOf(false) }
     Scaffold (
-        topBar = { topAppBar() },
+        topBar = { topAppBar(navController, user) },
     ){paddingValues ->
         Column (modifier = Modifier
             .fillMaxSize()
@@ -99,14 +101,5 @@ fun addRecipeScreen(){
             )
         }
 
-    }
-}
-
-
-@Preview
-@Composable
-fun prev2(){
-    Recipes_AppTheme {
-        addRecipeScreen()
     }
 }

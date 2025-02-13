@@ -14,9 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.my_recipes_app.recipes_app.database.users.UserEntity
+import com.my_recipes_app.recipes_app.navegacion.NavigationState
 
 @Composable
-fun topAppBar(){
+fun topAppBar(navController: NavController, user: UserEntity){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -24,7 +27,7 @@ fun topAppBar(){
             .padding(top = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
-        IconButton(onClick = {}) {
+        IconButton(onClick = {navController.navigate(NavigationState.Profile.createRoute(user.username, user.email) )}) {
             Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu", modifier = Modifier.size(50.dp), tint = Color.White)
         }
     }

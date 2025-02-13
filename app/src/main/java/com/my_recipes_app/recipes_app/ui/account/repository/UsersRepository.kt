@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UsersRepository(private val usersDAO: UsersDAO) {
 
-    suspend fun getUserFromEntity(email: String, password: String): UserEntity?{
+    suspend fun getUserFromEntity(email: String, password: String): UserEntity{
         return usersDAO.getUser(email, password)
     }
 

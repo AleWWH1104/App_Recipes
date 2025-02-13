@@ -6,20 +6,41 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.my_recipes_app.recipes_app.R
+import com.my_recipes_app.recipes_app.navegacion.NavigationState
+import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun signUpScreen(){
+fun signUpScreen(navController: NavController, viewModel: UserViewModel){
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var hidden by remember { mutableStateOf(true) }
+    val user by viewModel.user.observeAsState()
+    val errorMessage by viewModel.errorMessage.observeAsState()
+
+    LaunchedEffect(user) {
+        if (user != null) {
+            navController.navigate(NavigationState.Home.route) {
+                popUpTo(NavigationState.signUp.route) { inclusive = true }
+            }
+        }
+        viewModel.clearError()
+    }
+
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFFe3ddd4))
     ){
@@ -42,8 +63,8 @@ fun signUpScreen(){
                     style = MaterialTheme.typography.titleSmall
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = username,
+                    onValueChange = {username = it},
                     label = { Text(text= stringResource( id =  R.string.username), style = MaterialTheme.typography.labelLarge) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -51,8 +72,8 @@ fun signUpScreen(){
                     )
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = email,
+                    onValueChange = { email = it},
                     label = { Text(text= stringResource( id =  R.string.email), style = MaterialTheme.typography.labelLarge) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -60,18 +81,30 @@ fun signUpScreen(){
                     )
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = password,
+                    onValueChange = {password = it},
                     label = { Text(text= stringResource( id =  R.string.password), style = MaterialTheme.typography.labelLarge) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
-                    )
+                    ),
+                    visualTransformation =
+                    if (hidden) PasswordVisualTransformation() else VisualTransformation.None,
+                    trailingIcon = {
+                        IconButton(onClick = { hidden = !hidden }) {
+                            val vector = painterResource(
+                                if (hidden) R.drawable.eye_on
+                                else R.drawable.eye_off
+                            )
+                            val description = if (hidden) "Ocultar contraseña" else "Revelar contraseña"
+                            Icon(painter = vector, contentDescription = description, tint = Color(0xFF5e503f), modifier = Modifier.size(20.dp))
+                        }
+                    }
                 )
                 TextButton(
-                    onClick = {},
+                    onClick = {viewModel.signUp(username, email, password)},
                     modifier = Modifier
-                        .fillMaxWidth(0.4f) // Hace que el botón sea cuadrado
+                        .fillMaxWidth(0.4f)
                         .background(Color(0xFF5e503f), shape = RoundedCornerShape(5.dp))
                 ) {
                     Text(
@@ -79,6 +112,7 @@ fun signUpScreen(){
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
+                errorMessage?.let { Text(it, color = Color.Red) }
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -89,7 +123,7 @@ fun signUpScreen(){
                     style = MaterialTheme.typography.bodySmall
                 )
                 TextButton(
-                    onClick = {}
+                    onClick = {navController.navigate(NavigationState.signIn.route)}
                 ) {
                     Text(
                         text = stringResource(id= R.string.sign_in),

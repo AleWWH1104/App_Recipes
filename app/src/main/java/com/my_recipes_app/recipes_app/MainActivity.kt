@@ -11,37 +11,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.my_recipes_app.recipes_app.navegacion.AppNavigation
+import com.my_recipes_app.recipes_app.navegacion.NavigationState
+import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val userRepository = (application as MyApp).userRepository
+        val userViewModel: UserViewModel = UserViewModel(userRepository, application)
         setContent {
             Recipes_AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+
+                val startDestination = if (userViewModel.user.value != null){
+                    NavigationState.Home.route
+                } else {
+                    NavigationState.signIn.route
                 }
+                AppNavigation(navController, startDestination,userViewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Recipes_AppTheme {
-        Greeting("Android")
+        userViewModel.checkSession()
     }
 }

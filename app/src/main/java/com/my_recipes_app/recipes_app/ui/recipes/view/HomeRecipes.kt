@@ -15,16 +15,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.my_recipes_app.recipes_app.ui.elements.addRecipeButton
 import com.my_recipes_app.recipes_app.ui.elements.topAppBar
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 import com.my_recipes_app.recipes_app.R
+import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.elements.recipeCard
 
 @Composable
-fun homeRecipeScreen(){
+fun homeRecipeScreen(navController: NavController, user: UserEntity){
     Scaffold (
-        topBar = { topAppBar()},
+        topBar = { topAppBar(navController, user)},
         floatingActionButton = { addRecipeButton() },
         floatingActionButtonPosition = FabPosition.End
     ){paddingValues ->
@@ -91,11 +93,3 @@ fun homeRecipeScreen(){
     }
 }
 
-
-@Preview
-@Composable
-fun prev(){
-    Recipes_AppTheme {
-        homeRecipeScreen()
-    }
-}

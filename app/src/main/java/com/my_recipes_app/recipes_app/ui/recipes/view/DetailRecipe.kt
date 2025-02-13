@@ -15,14 +15,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.my_recipes_app.recipes_app.R
+import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.elements.topAppBar
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 
 @Composable
-fun detailRecipeScreen(){
+fun detailRecipeScreen(navController: NavController, user: UserEntity){
     Scaffold(
-        topBar = { topAppBar()}
+        topBar = { topAppBar(navController, user)}
     ) { paddingValues ->
         Column (modifier = Modifier
             .fillMaxSize()
@@ -67,14 +69,5 @@ fun detailRecipeScreen(){
 
 
         }
-    }
-}
-
-
-@Preview
-@Composable
-fun prev3(){
-    Recipes_AppTheme {
-        detailRecipeScreen()
     }
 }

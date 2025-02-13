@@ -1,7 +1,5 @@
 package com.my_recipes_app.recipes_app.ui.account.view
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,31 +10,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.my_recipes_app.recipes_app.R
-import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
+import com.my_recipes_app.recipes_app.navegacion.NavigationState
+import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
 
 @Composable
-fun profileSideBar(){
+fun profileSideBar(username: String,email: String, viewModel: UserViewModel, navController: NavController){
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .width(300.dp)
             .background(Color(0xFF5e503f))
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable { navController.popBackStack() },
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Row (
+        Row (modifier = Modifier.padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = null,
                 modifier = Modifier.size(60.dp), tint = Color.Gray)
-            Text(text = stringResource(id = R.string.username), style = MaterialTheme.typography.bodyMedium)
+            Text(text = username, style = MaterialTheme.typography.bodyMedium)
         }
         Column (
             modifier = Modifier.fillMaxWidth(),
@@ -47,7 +46,10 @@ fun profileSideBar(){
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(vertical = 4.dp)
-                    .clickable {}
+                    .clickable {
+                        viewModel.logOut()
+                        navController.navigate(NavigationState.signIn.route)
+                    }
             ) {
                 Icon(
                     imageVector = Icons.Filled.ExitToApp,
@@ -62,7 +64,10 @@ fun profileSideBar(){
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(vertical = 4.dp)
-                    .clickable {}
+                    .clickable {
+                        viewModel.deleteAccount()
+                        navController.navigate(NavigationState.signUp.route)
+                    }
             ) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
