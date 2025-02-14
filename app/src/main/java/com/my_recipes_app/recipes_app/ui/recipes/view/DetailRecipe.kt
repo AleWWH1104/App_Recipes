@@ -71,7 +71,7 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity, recipeId:
         }
     }
     Scaffold(
-        topBar = { topAppBar(navController, user)}
+        topBar = { topAppBar(navController, user, true)}
     ) { paddingValues ->
         Column (modifier = Modifier
             .fillMaxSize()
@@ -90,11 +90,11 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity, recipeId:
                     painter = if (imageUrl.isEmpty()) {
                         painterResource(id = R.drawable.default_img)
                     } else {
-                        rememberAsyncImagePainter(imageUrl)
+                        rememberAsyncImagePainter("file://$imageUrl")
                     },
                     contentDescription = "Recipe Image",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Fit
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))
@@ -102,7 +102,7 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity, recipeId:
             Spacer(modifier = Modifier.size(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(0.7f).background(Color(0xFFcec2b3)),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(text = stringResource(id = R.string.preparation_time) + "${recipe?.time ?: 0}", style = MaterialTheme.typography.labelLarge)

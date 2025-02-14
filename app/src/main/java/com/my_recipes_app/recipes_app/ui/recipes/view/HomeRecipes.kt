@@ -44,7 +44,7 @@ fun homeRecipeScreen(navController: NavController, user: UserEntity, viewModel: 
     }
 
     Scaffold (
-        topBar = { topAppBar(navController, user)},
+        topBar = { topAppBar(navController, user, false)},
         floatingActionButton = { addRecipeButton(navController) },
         floatingActionButtonPosition = FabPosition.End
     ){paddingValues ->
@@ -90,8 +90,6 @@ fun homeRecipeScreen(navController: NavController, user: UserEntity, viewModel: 
                     )
                 ) {
                     Icon(imageVector = Icons.Filled.Favorite, contentDescription = null, tint = Color(0xFFe3ddd4))
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(text = stringResource(R.string.favorites), style = MaterialTheme.typography.labelMedium)
                 }
                 Button(
                     onClick = { selectedList = "TIME" },

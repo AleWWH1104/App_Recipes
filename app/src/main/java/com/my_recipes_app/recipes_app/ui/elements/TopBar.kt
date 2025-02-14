@@ -21,7 +21,7 @@ import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.navegacion.NavigationState
 
 @Composable
-fun topAppBar(navController: NavController, user: UserEntity){
+fun topAppBar(navController: NavController, user: UserEntity, enable : Boolean){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -30,8 +30,15 @@ fun topAppBar(navController: NavController, user: UserEntity){
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        IconButton(onClick = {navController.popBackStack()}) {
-            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "atras", modifier = Modifier.size(50.dp), tint = Color.White)
+        if (enable){
+            IconButton(onClick = {navController.popBackStack()}) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "atras",
+                    modifier = Modifier.size(50.dp),
+                    tint = Color.White
+                )
+            }
         }
         IconButton(onClick = {navController.navigate(NavigationState.Profile.createRoute(user.username, user.email) )}) {
             Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu", modifier = Modifier.size(50.dp), tint = Color.White)

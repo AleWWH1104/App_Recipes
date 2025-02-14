@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,21 +19,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.my_recipes_app.recipes_app.ui.elements.topAppBar
-import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 import com.my_recipes_app.recipes_app.R
-import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.navegacion.NavigationState
 import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
-import com.my_recipes_app.recipes_app.ui.elements.addIngredientField
 import com.my_recipes_app.recipes_app.ui.elements.imageField
 import com.my_recipes_app.recipes_app.ui.recipes.viewmodel.RecipeViewModel
 
@@ -51,9 +46,13 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
 
     val isRecipeAdded by viewModel.isRecipeAdded.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState()
+    val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        imageUrl = uri?.toString()
+        uri?.let {
+            val imagePath = viewModel.saveImageToInternalStorage(context, it)
+            imageUrl = imagePath
+        }
     }
 
     LaunchedEffect(isRecipeAdded) {
@@ -71,7 +70,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
     Scaffold (
         topBar = {
             if (user != null) {
-                topAppBar(navController, user)
+                topAppBar(navController, user, true)
             }
         },
     ){paddingValues ->
@@ -92,7 +91,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
                     painter = if (imageUrl.isNullOrEmpty()) {
                         painterResource(id = R.drawable.default_img)
                     } else {
-                        rememberAsyncImagePainter(imageUrl)
+                        rememberAsyncImagePainter("file://$imageUrl")
                     },
                     contentDescription = "Recipe Image",
                     modifier = Modifier.fillMaxSize(),
@@ -142,13 +141,13 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
             Spacer(modifier = Modifier.background(Color(0xFFcec2b3)).fillMaxWidth().height(5.dp))
             Spacer(modifier = Modifier.size(8.dp))
             Text(text = stringResource(id = R.string.add_ingredients), style = MaterialTheme.typography.titleSmall)
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) { items(2){
-                addIngredientField()
-                }
-            }
+//            LazyColumn(
+//                contentPadding = PaddingValues(16.dp),
+//                modifier = Modifier.fillMaxWidth()
+//            ) { items(2){
+//                addIngredientField()
+//                }
+//            }
             Spacer(modifier = Modifier.background(Color(0xFFcec2b3)).fillMaxWidth().height(5.dp))
             Spacer(modifier = Modifier.size(8.dp))
             Text(text = stringResource(id = R.string.preparation_recipe), style = MaterialTheme.typography.titleSmall)

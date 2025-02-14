@@ -1,6 +1,8 @@
 package com.my_recipes_app.recipes_app.ui.recipes.viewmodel
 
 import android.app.Application
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.my_recipes_app.recipes_app.database.ingredients.IngredientEntity
@@ -11,6 +13,8 @@ import com.my_recipes_app.recipes_app.ui.recipes.repository.RecipesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
 class RecipeViewModel(private val repository: RecipesRepository, application: Application) : AndroidViewModel(application) {
 
@@ -183,5 +187,21 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
         viewModelScope.launch {
             repository.getFavStatus(recipeId, isFavorite)
         }
+    }
+
+    fun saveImageToInternalStorage(context: Context, uri: Uri): String? {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val directory = File(context.filesDir, "images")
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        val file = File(directory, "${System.currentTimeMillis()}.jpg")
+        val outputStream = FileOutputStream(file)
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+        return file.absolutePath
     }
 }
