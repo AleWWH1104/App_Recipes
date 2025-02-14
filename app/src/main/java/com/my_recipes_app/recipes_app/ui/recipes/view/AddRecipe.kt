@@ -42,7 +42,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
     var isFavorite by remember { mutableStateOf(false) }
     var ingredients by remember { mutableStateOf(listOf("")) }
     val isRecipeAdded by viewModel.isRecipeAdded.observeAsState(false)
-
+    val errorMessage by viewModel.errorMessage.observeAsState()
     if (user != null) {
         Log.d("AddRecipeScreen", "User ID: ${user.userId}")
     }
@@ -50,6 +50,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
     LaunchedEffect(isRecipeAdded) {
         if (isRecipeAdded) {
             navController.navigate(NavigationState.Home.route)
+            viewModel.clearRecipeAddedFlag()
         }
         viewModel.clearError()
     }
@@ -147,6 +148,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
                     textAlign = TextAlign.Center
                 )
             }
+            errorMessage?.let { Text(it, color = Color.Red) }
         }
 
     }

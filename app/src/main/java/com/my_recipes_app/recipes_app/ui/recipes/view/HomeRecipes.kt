@@ -74,10 +74,14 @@ fun homeRecipeScreen(navController: NavController, user: UserEntity, viewModel: 
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Icon(painter = painterResource(id = R.drawable.marcador), contentDescription = "marcador", tint = Color(0xFF956934), modifier = Modifier.size(30.dp))
-                Column {
-                    Text(text = stringResource(id = R.string.saved_recipes), style = MaterialTheme.typography.bodySmall)
-                    Text(text = "${recipeCount.value} recetas", style = MaterialTheme.typography.bodySmall)
+                Row(verticalAlignment = Alignment.CenterVertically){
+                    IconButton(onClick = {selectedList = "ALL"}) {
+                        Icon(painter = painterResource(id = R.drawable.marcador), contentDescription = "marcador", tint = Color(0xFF956934), modifier = Modifier.size(30.dp))
+                    }
+                    Column{
+                        Text(text = stringResource(id = R.string.saved_recipes), style = MaterialTheme.typography.bodySmall)
+                        Text(text = "${recipeCount.value} " + stringResource(id=R.string.recipes), style = MaterialTheme.typography.bodySmall)
+                    }
                 }
                 Button(
                     onClick = { selectedList = "FAV" },

@@ -31,7 +31,8 @@ fun recipeCard(recipe: RecipeEntity, navController: NavController){
             .fillMaxWidth()
             .height(100.dp)
             .padding(bottom = 16.dp)
-            .clickable { navController.navigate(NavigationState.RecipeDetail.createRoute(recipe.recipeName, recipe.time, recipe.isFavorite, recipe.description)) },
+            .clickable { navController.navigate(NavigationState.RecipeDetail.createRoute(
+                recipe.recipeId, recipe.recipeName, recipe.userOwnerId, recipe.time, recipe.isFavorite, recipe.description))},
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ){
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -41,7 +42,11 @@ fun recipeCard(recipe: RecipeEntity, navController: NavController){
                 Text(text = recipe.recipeName, style = MaterialTheme.typography.bodyLarge)
                 Text(text = "${recipe.time} min", style = MaterialTheme.typography.bodySmall)
             }
-            Icon(imageVector = Icons.Filled.Favorite, contentDescription= "fav", tint= Color(0xFF5e503f), modifier = Modifier.size(30.dp).weight(0.1f))
+            if (recipe.isFavorite){
+                Icon(imageVector = Icons.Filled.Favorite, contentDescription= "fav", tint= Color(0xFF5e503f), modifier = Modifier.size(30.dp).weight(0.1f))
+            }else{
+                Spacer(modifier = Modifier.size(30.dp).weight(0.1f))
+            }
         }
     }
 }

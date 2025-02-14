@@ -10,6 +10,7 @@ import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.recipes.repository.RecipesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RecipeViewModel(private val repository: RecipesRepository, application: Application) : AndroidViewModel(application) {
 
@@ -35,7 +36,7 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
     val recipeCount: LiveData<Int> = _recipeCount
 
     private val _recipeDetail = MutableLiveData<RecipeEntity>()
-    val mealDetail: LiveData<RecipeEntity> = _recipeDetail
+    val recipeDetail: LiveData<RecipeEntity> = _recipeDetail
 
     private val _isRecipeAdded = MutableLiveData<Boolean>()
     val isRecipeAdded: LiveData<Boolean> = _isRecipeAdded
@@ -73,8 +74,9 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
         }
     }
 
-    fun deleteRecipe(recipe: RecipeEntity) {
+    fun deleteRecipe(recipeId: Int, userId: Int, name: String, time: Int, isFavorite: Boolean, image: String, description: String) {
         viewModelScope.launch {
+            val recipe = RecipeEntity(recipeId, name, userId, time, isFavorite,image, description)
             repository.deleteRecipeInEntity(recipe)
             fetchRecipes(recipe.userOwnerId)
         }
@@ -121,17 +123,6 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
         }
     }
 
-    fun fetchRecipeByDetail(recipeId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val recipe = repository.getRecipeById(recipeId)
-                _recipeDetail.value = recipe
-            } catch (e: Exception) {
-                Log.e("RecipeViewModel", "Error fetching recipe detail", e)
-            }
-        }
-    }
-
     fun fetchIngredientsByRecipe(recipeId: Int) {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -164,5 +155,9 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
 
     fun clearError() {
         _errorMessage.value = null
+    }
+
+    fun clearRecipeAddedFlag() {
+        _isRecipeAdded.value = false
     }
 }

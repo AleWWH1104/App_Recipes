@@ -50,20 +50,26 @@ fun AppNavigation(navController: NavHostController, startDestination: String, us
         }
         composable(route = NavigationState.RecipeDetail.route,
             arguments = listOf(
-                navArgument("recipeName") {type = NavType.StringType},
-                navArgument("time") {type = NavType.IntType},
-                navArgument("isFav") {type = NavType.BoolType},
-                navArgument("description") {type = NavType.StringType}
+                navArgument("recipeId") { type = NavType.IntType },
+                navArgument("recipeName") { type = NavType.StringType },
+                navArgument("userOwnerId") { type = NavType.IntType },
+                navArgument("time") { type = NavType.IntType },
+                navArgument("isFav") { type = NavType.BoolType },
+                navArgument("description") { type = NavType.StringType }
             )
-        ){ backStackEntry ->
-            val recipeName =backStackEntry.arguments?.getString("recipeName")?: ""
-            val time =backStackEntry.arguments?.getInt("time")?: 0
-            val isFav =backStackEntry.arguments?.getBoolean("isFav")?: false
-            val description =backStackEntry.arguments?.getString("description")?: ""
+        ) { backStackEntry ->
+            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
+            val recipeName = backStackEntry.arguments?.getString("recipeName") ?: ""
+            val userOwnerId = backStackEntry.arguments?.getInt("userOwnerId") ?: 0
+            val time = backStackEntry.arguments?.getInt("time") ?: 0
+            val isFav = backStackEntry.arguments?.getBoolean("isFav") ?: false
+            val description = backStackEntry.arguments?.getString("description") ?: ""
+
             if (user != null) {
-                detailRecipeScreen(navController, user, recipeName, time, isFav, description)
+                detailRecipeScreen(navController, user, recipeId, recipeName, userOwnerId, time, isFav, description, recipeViewModel)
             }
         }
+
     }
 
 }
