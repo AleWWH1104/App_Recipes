@@ -1,8 +1,11 @@
 package com.my_recipes_app.recipes_app.ui.recipes.view
 
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,10 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.my_recipes_app.recipes_app.ui.elements.topAppBar
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 import com.my_recipes_app.recipes_app.R
@@ -30,6 +35,7 @@ import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.navegacion.NavigationState
 import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
 import com.my_recipes_app.recipes_app.ui.elements.addIngredientField
+import com.my_recipes_app.recipes_app.ui.elements.imageField
 import com.my_recipes_app.recipes_app.ui.recipes.viewmodel.RecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,10 +47,13 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
     var description by remember { mutableStateOf("") }
     var isFavorite by remember { mutableStateOf(false) }
     var ingredients by remember { mutableStateOf(listOf("")) }
+    var imageUrl by remember { mutableStateOf<String?>(null) }
+
     val isRecipeAdded by viewModel.isRecipeAdded.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState()
-    if (user != null) {
-        Log.d("AddRecipeScreen", "User ID: ${user.userId}")
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        imageUrl = uri?.toString()
     }
 
     LaunchedEffect(isRecipeAdded) {
@@ -53,6 +62,10 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
             viewModel.clearRecipeAddedFlag()
         }
         viewModel.clearError()
+    }
+
+    imageField { selectedImgUri ->
+        imageUrl = selectedImgUri
     }
 
     Scaffold (
@@ -68,8 +81,24 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
             .background(Color(0xFFe3ddd4)),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Image(painter = painterResource(id = R.drawable.default_img), contentDescription = "img",
-                modifier = Modifier.fillMaxWidth().height(150.dp), contentScale = ContentScale.Crop)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .clickable { launcher.launch("image/*") }, // Abre la galería
+                contentAlignment = Alignment.Center
+            ){
+                Image(
+                    painter = if (imageUrl.isNullOrEmpty()) {
+                        painterResource(id = R.drawable.default_img)
+                    } else {
+                        rememberAsyncImagePainter(imageUrl)
+                    },
+                    contentDescription = "Recipe Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -83,7 +112,8 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
                         ),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.labelLarge
                     )
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
                         Text(text = stringResource(id= R.string.preparation_time), style = MaterialTheme.typography.bodySmall)
@@ -94,7 +124,9 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
                             ),
-                            modifier = Modifier.width(60.dp).height(40.dp)
+                            modifier = Modifier.width(60.dp).height(50.dp),
+                            textStyle = MaterialTheme.typography.bodySmall,
+
                         )
                     }
                 }
@@ -128,12 +160,13 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
                 ),
-                modifier = Modifier.fillMaxWidth(0.7f).height(100.dp).padding(bottom = 16.dp)
+                textStyle = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.fillMaxWidth(0.92f).height(100.dp).padding(bottom = 16.dp)
             )
             TextButton(
                 onClick = { Log.d("RecipeViewModel", "Insertando receta con userId: ${user?.userId ?: "userId es null"}")
                     if (user != null) {
-                        viewModel.insertRecipe(user.userId, recipeName, preparationTime, isFavorite, description)
+                        viewModel.insertRecipe(user.userId, recipeName, preparationTime, isFavorite, imageUrl?: "", description)
                     }
                 },
                 modifier = Modifier

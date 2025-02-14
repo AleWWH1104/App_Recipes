@@ -69,7 +69,8 @@ fun signUpScreen(navController: NavController, viewModel: UserViewModel){
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
-                    )
+                    ),
+                    textStyle = MaterialTheme.typography.labelLarge
                 )
                 OutlinedTextField(
                     value = email,
@@ -78,7 +79,8 @@ fun signUpScreen(navController: NavController, viewModel: UserViewModel){
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
-                    )
+                    ),
+                    textStyle = MaterialTheme.typography.labelLarge
                 )
                 OutlinedTextField(
                     value = password,
@@ -99,7 +101,8 @@ fun signUpScreen(navController: NavController, viewModel: UserViewModel){
                             val description = if (hidden) "Ocultar contraseña" else "Revelar contraseña"
                             Icon(painter = vector, contentDescription = description, tint = Color(0xFF5e503f), modifier = Modifier.size(20.dp))
                         }
-                    }
+                    },
+                    textStyle = MaterialTheme.typography.labelLarge
                 )
                 TextButton(
                     onClick = {viewModel.signUp(username, email, password)},

@@ -55,6 +55,7 @@ fun addIngredientField(){
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
                 ),
+                textStyle = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.fillMaxWidth(0.7f).height(40.dp)
             )
             Row(

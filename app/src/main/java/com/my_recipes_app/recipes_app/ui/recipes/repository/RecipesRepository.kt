@@ -12,12 +12,16 @@ class RecipesRepository(private val recipesDAO: RecipesDAO, private val ingredie
         return recipesDAO.getUserWithRecipes(userId)
     }
 
+    fun getRecipeDetail(recipeId: Int): RecipeEntity{
+        return recipesDAO.getRecipeById(recipeId)
+    }
+
     suspend fun insertRecipeInEntity(recipe: RecipeEntity){
         return recipesDAO.insertRecipe(recipe)
     }
 
-    suspend fun deleteRecipeInEntity(recipe: RecipeEntity){
-        return recipesDAO.deleteRecipe(recipe)
+    suspend fun deleteRecipeInEntity(recipeId: Int){
+        return recipesDAO.deleteRecipe(recipeId)
     }
 
     fun getFavoriteRecipesByUser(userId: Int): List<RecipeEntity>{
@@ -28,12 +32,12 @@ class RecipesRepository(private val recipesDAO: RecipesDAO, private val ingredie
         return recipesDAO.getRecipesSortedByTime(userId)
     }
 
-    fun getRecipeById(recipeId: Int): RecipeEntity{
-        return recipesDAO.getRecipeById(recipeId)
-    }
-
     suspend fun getFavStatus(recipeId: Int, isFavorite: Boolean){
         return recipesDAO.updateFavoriteStatus(recipeId, isFavorite)
+    }
+
+    suspend fun updateRecipeImage(recipeId: Int, imageUrl: String) {
+        return recipesDAO.updateRecipeImage(recipeId, imageUrl)
     }
 
     fun getRecipeCountByUser(userId: Int): Int{

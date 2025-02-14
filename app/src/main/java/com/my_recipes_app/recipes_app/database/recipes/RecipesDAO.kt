@@ -12,8 +12,8 @@ interface RecipesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe (recipe: RecipeEntity)
 
-    @Delete
-    suspend fun deleteRecipe (recipe: RecipeEntity)
+    @Query("DELETE FROM recipesDB WHERE recipeId = :recipeId")
+    suspend fun deleteRecipe (recipeId: Int)
 
     @Query("SELECT * FROM recipesDB WHERE recipeId = :recipeId")
     fun getRecipeById(recipeId: Int): RecipeEntity
@@ -32,4 +32,8 @@ interface RecipesDAO {
 
     @Query("SELECT COUNT(*) FROM recipesDB WHERE userOwner = :userId")
     fun getRecipeCountByUser(userId: Int): Int
+
+    @Query("UPDATE recipesDB SET image = :imageUrl WHERE recipeId = :recipeId")
+    suspend fun updateRecipeImage(recipeId: Int, imageUrl: String)
+
 }

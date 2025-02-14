@@ -56,7 +56,19 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
         }
     }
 
-    fun insertRecipe(userId: Int, name: String, time: String, isFavorite: Boolean, description: String) {
+    fun fetchRecipeDetail(recipeId: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val recipe = repository.getRecipeDetail(recipeId)
+                Log.d("RecipeViewModel", "Fetched recipe image: ${recipe.image}")
+                _recipeDetail.postValue(recipe)
+            }catch (e: Exception) {
+                Log.e("RecipeViewModel", "Error fetching recipe detail: ${e.message}")
+            }
+        }
+    }
+
+    fun insertRecipe(userId: Int, name: String, time: String, isFavorite: Boolean, image: String?, description: String) {
         if (validateInputs(name, description, time)) {
             viewModelScope.launch {
                 val newRecipe = RecipeEntity(
@@ -65,6 +77,7 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
                     recipeName = name,
                     time = time.toIntOrNull() ?: 0,
                     isFavorite = isFavorite,
+                    image = image,
                     description = description
                 )
                 repository.insertRecipeInEntity(newRecipe)
@@ -74,11 +87,10 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
         }
     }
 
-    fun deleteRecipe(recipeId: Int, userId: Int, name: String, time: Int, isFavorite: Boolean, image: String, description: String) {
+    fun deleteRecipe(recipeId: Int, userOwnerId: Int) {
         viewModelScope.launch {
-            val recipe = RecipeEntity(recipeId, name, userId, time, isFavorite,image, description)
-            repository.deleteRecipeInEntity(recipe)
-            fetchRecipes(recipe.userOwnerId)
+            repository.deleteRecipeInEntity(recipeId)
+            fetchRecipes(userOwnerId)
         }
     }
 
@@ -159,5 +171,17 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
 
     fun clearRecipeAddedFlag() {
         _isRecipeAdded.value = false
+    }
+
+    fun updateRecipeImage(recipeId: Int, imageUrl: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateRecipeImage(recipeId, imageUrl)
+        }
+    }
+
+    fun updateFavoriteStatus(recipeId: Int, isFavorite: Boolean) {
+        viewModelScope.launch {
+            repository.getFavStatus(recipeId, isFavorite)
+        }
     }
 }
