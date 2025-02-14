@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.my_recipes_app.recipes_app.database.recipes.UsersWithRecipes
 import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.account.repository.UsersRepository
 import kotlinx.coroutines.launch
@@ -19,9 +18,6 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
 
     private val _user = MutableLiveData<UserEntity?>()
     val user : LiveData<UserEntity?> = _user
-
-    private val _userWithRecipes = MutableLiveData<UsersWithRecipes>()
-    val userWithRecipes: LiveData<UsersWithRecipes> get() = _userWithRecipes
 
     private val sharedPreferences = application.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
@@ -46,10 +42,11 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
         if (validateInputs(username, email, password)){
             viewModelScope.launch {
                 val newUser = UserEntity(username = username, email = email, password = password)
-                repository.insertUserInEntity(newUser)
-                _user.value = newUser
-                saveSession(newUser)
-                _errorMessage.value = null
+                val userId = repository.insertUserInEntity(newUser).toInt()
+                val registeredUser = UserEntity(userId, username, email, password)
+                _user.postValue(registeredUser)
+                saveSession(registeredUser)
+                _errorMessage.postValue(null)
             }
         }
     }
@@ -75,6 +72,7 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
     }
 
     fun saveSession(user: UserEntity) {
+        Log.d("UserViewModel", "Guardando sesión: userId=${user.userId}, username=${user.username}")
         sharedPreferences.edit()
             .putInt("userId", user.userId)
             .putString("username", user.username)
@@ -86,7 +84,7 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
         val userId = sharedPreferences.getInt("userId", -1)
         val username = sharedPreferences.getString("username", null)
         val email = sharedPreferences.getString("email", null)
-
+        Log.d("UserViewModel", "Recuperando sesión: userId=$userId, username=$username, email=$email")
         return if (userId != -1 && username != null && email != null) {
             UserEntity(userId, username, email, "")
         } else {

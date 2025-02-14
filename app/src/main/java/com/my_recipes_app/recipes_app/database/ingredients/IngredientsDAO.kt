@@ -9,8 +9,6 @@ interface IngredientDAO {
     suspend fun insertIngredient(ingredient: IngredientEntity)
 
     @Query("SELECT * FROM ingredientsDB WHERE recipeOwner = :recipeId")
-    fun getIngredientsForRecipe(recipeId: Int): Flow<List<IngredientEntity>>
+    fun getIngredientsForRecipe(recipeId: Int): List<IngredientEntity>
 
-    @Delete
-    suspend fun deleteIngredient(ingredient: IngredientEntity)
 }

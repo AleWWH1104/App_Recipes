@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.my_recipes_app.recipes_app.navegacion.AppNavigation
 import com.my_recipes_app.recipes_app.navegacion.NavigationState
 import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
+import com.my_recipes_app.recipes_app.ui.recipes.viewmodel.RecipeViewModel
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,19 +25,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val userRepository = (application as MyApp).userRepository
+        val recipeRepository = (application as MyApp).recipeRepository
         val userViewModel: UserViewModel = UserViewModel(userRepository, application)
+        val recipeViewModel: RecipeViewModel = RecipeViewModel(recipeRepository, application)
+
+        userViewModel.checkSession()
+        val user = userViewModel.getSession()
         setContent {
             Recipes_AppTheme {
                 val navController = rememberNavController()
 
-                val startDestination = if (userViewModel.user.value != null){
+                val startDestination = if (user != null){
                     NavigationState.Home.route
                 } else {
                     NavigationState.signIn.route
                 }
-                AppNavigation(navController, startDestination,userViewModel)
+                AppNavigation(navController, startDestination,userViewModel, recipeViewModel)
             }
         }
-        userViewModel.checkSession()
     }
 }

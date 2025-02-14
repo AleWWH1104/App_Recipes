@@ -4,8 +4,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +29,9 @@ import com.my_recipes_app.recipes_app.ui.elements.topAppBar
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 
 @Composable
-fun detailRecipeScreen(navController: NavController, user: UserEntity){
+fun detailRecipeScreen(navController: NavController, user: UserEntity,
+                       recipeName: String, time: Int, isFav: Boolean, description: String){
+
     Scaffold(
         topBar = { topAppBar(navController, user)}
     ) { paddingValues ->
@@ -35,22 +44,26 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity){
             Image(painter = painterResource(id = R.drawable.default_img), contentDescription = "img",
                 modifier = Modifier.fillMaxWidth().height(200.dp), contentScale = ContentScale.Crop)
             Spacer(modifier = Modifier.size(8.dp))
-            Text(text = "Titulo receta", style = MaterialTheme.typography.titleMedium)
+            Text(text = recipeName, style = MaterialTheme.typography.titleMedium)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ){
-
-
+                Text(text = stringResource(id = R.string.preparation_time) + "$time", style = MaterialTheme.typography.bodySmall)
+                Icon(
+                    imageVector = if (isFav) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "fav icon",
+                    tint = Color(0xFF956934),
+                    modifier = Modifier.size(70.dp)
+                )
             }
             Column(modifier = Modifier.fillMaxWidth().padding(20.dp).weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
-
             ) {
                 Text(text = stringResource(id = R.string.all_ingredients), style = MaterialTheme.typography.bodyLarge )
                 Text(text = "Ingrediente 1", style = MaterialTheme.typography.bodySmall )
                 Text(text = stringResource(id = R.string.preparation_recipe), style = MaterialTheme.typography.bodyLarge )
-                Text(text = "Descripcion de como se prepara esta receta", style = MaterialTheme.typography.bodySmall )
+                Text(text = description, style = MaterialTheme.typography.bodySmall )
             }
             TextButton(
                 onClick = {},
@@ -66,8 +79,7 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity){
                     textAlign = TextAlign.Center
                 )
             }
-
-
         }
     }
 }
+

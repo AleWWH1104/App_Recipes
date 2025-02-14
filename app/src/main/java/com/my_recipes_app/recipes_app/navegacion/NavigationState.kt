@@ -9,4 +9,10 @@ sealed class NavigationState(val route: String) {
             return "profile/$username/$email"
         }
     }
+    data object AddRecipe:NavigationState("addRecipe")
+    data object RecipeDetail:NavigationState("recipe/{recipeName}/{time}/{isFav}/{description}"){
+        fun createRoute(recipeName: String, time: Int, isFav: Boolean, description: String): String{
+            return "recipe/$recipeName/$time/$isFav/$description"
+        }
+    }
 }

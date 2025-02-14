@@ -13,11 +13,7 @@ class UsersRepository(private val usersDAO: UsersDAO) {
         return usersDAO.getUser(email, password)
     }
 
-    fun getUsersRecipes(userId: Int): Flow<UsersWithRecipes>{
-        return usersDAO.getUserWithRecipes(userId)
-    }
-
-    suspend fun insertUserInEntity(user: UserEntity){
+    suspend fun insertUserInEntity(user: UserEntity): Long{
         return usersDAO.insertUser(user)
     }
 

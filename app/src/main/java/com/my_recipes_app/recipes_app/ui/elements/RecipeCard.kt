@@ -16,37 +16,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.my_recipes_app.recipes_app.R
+import com.my_recipes_app.recipes_app.database.recipes.RecipeEntity
+import com.my_recipes_app.recipes_app.navegacion.NavigationState
 import com.my_recipes_app.recipes_app.ui.recipes.view.homeRecipeScreen
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
 
 @Composable
-fun recipeCard(){
+fun recipeCard(recipe: RecipeEntity, navController: NavController){
     Card (
         shape = RoundedCornerShape(5.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
             .padding(bottom = 16.dp)
-            .clickable {  },
+            .clickable { navController.navigate(NavigationState.RecipeDetail.createRoute(recipe.recipeName, recipe.time, recipe.isFavorite, recipe.description)) },
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ){
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Image(painter = painterResource(id= R.drawable.default_img), contentDescription = "recipe img",
                 contentScale = ContentScale.Crop, modifier = Modifier.weight(0.3f))
             Column( verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(0.6f).padding(start = 10.dp)) {
-                Text(text = "Titulo de receta", style = MaterialTheme.typography.bodyLarge)
-                Text(text = "10 min", style = MaterialTheme.typography.bodySmall)
+                Text(text = recipe.recipeName, style = MaterialTheme.typography.bodyLarge)
+                Text(text = "${recipe.time} min", style = MaterialTheme.typography.bodySmall)
             }
             Icon(imageVector = Icons.Filled.Favorite, contentDescription= "fav", tint= Color(0xFF5e503f), modifier = Modifier.size(30.dp).weight(0.1f))
         }
-    }
-}
-
-@Preview
-@Composable
-fun prev(){
-    Recipes_AppTheme {
-        recipeCard()
     }
 }
