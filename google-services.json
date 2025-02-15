@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336155293913",
+    "project_id": "apprecetas-cookybites",
+    "storage_bucket": "apprecetas-cookybites.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336155293913:android:591e2f0f05ebf5847666c8",
+        "android_client_info": {
+          "package_name": "com.my_recipes_app.recipes_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTX9VScHSMn9rhkjB1ebXupzlhafLIvdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

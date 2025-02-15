@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt") apply true
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.appdistribution)
 }
 
 android {
@@ -40,6 +42,11 @@ android {
     }
 }
 
+firebaseAppDistribution {
+    serviceCredentialsFile = "app/serviceKey.json"
+    appId = "1:981084530332:android:586e862dce95c38e666f59"
+    groups = "testers"
+}
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -58,6 +65,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics")
 
     //Coil
     val coil_version = "2.2.2"
@@ -81,4 +92,5 @@ dependencies {
     // LIVE DATA
     implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
 }
