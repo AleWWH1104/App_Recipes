@@ -41,7 +41,6 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
     var preparationTime by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var isFavorite by remember { mutableStateOf(false) }
-    var ingredients by remember { mutableStateOf(listOf("")) }
     var imageUrl by remember { mutableStateOf<String?>(null) }
 
     val isRecipeAdded by viewModel.isRecipeAdded.observeAsState(false)
@@ -83,7 +82,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(250.dp)
                     .clickable { launcher.launch("image/*") }, // Abre la galería
                 contentAlignment = Alignment.Center
             ){
@@ -140,16 +139,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
             }
             Spacer(modifier = Modifier.background(Color(0xFFcec2b3)).fillMaxWidth().height(5.dp))
             Spacer(modifier = Modifier.size(8.dp))
-            Text(text = stringResource(id = R.string.add_ingredients), style = MaterialTheme.typography.titleSmall)
-//            LazyColumn(
-//                contentPadding = PaddingValues(16.dp),
-//                modifier = Modifier.fillMaxWidth()
-//            ) { items(2){
-//                addIngredientField()
-//                }
-//            }
-            Spacer(modifier = Modifier.background(Color(0xFFcec2b3)).fillMaxWidth().height(5.dp))
-            Spacer(modifier = Modifier.size(8.dp))
+
             Text(text = stringResource(id = R.string.preparation_recipe), style = MaterialTheme.typography.titleSmall)
             OutlinedTextField(
                 value = description,
@@ -160,7 +150,7 @@ fun addRecipeScreen(navController: NavController, viewModel: RecipeViewModel, us
                     containerColor = Color.White, focusedBorderColor = Color(0xFF5e503f)
                 ),
                 textStyle = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.fillMaxWidth(0.92f).height(100.dp).padding(bottom = 16.dp)
+                modifier = Modifier.fillMaxWidth(0.92f).height(200.dp).padding(bottom = 16.dp)
             )
             TextButton(
                 onClick = { Log.d("RecipeViewModel", "Insertando receta con userId: ${user?.userId ?: "userId es null"}")

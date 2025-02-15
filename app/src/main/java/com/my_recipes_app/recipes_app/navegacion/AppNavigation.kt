@@ -32,16 +32,8 @@ fun AppNavigation(navController: NavHostController, startDestination: String, us
                 homeRecipeScreen(navController, user, recipeViewModel)
             }
         }
-        composable(route = NavigationState.Profile.route,
-            arguments = listOf(
-                navArgument("username") {type = NavType.StringType},
-                navArgument("email") {type = NavType.StringType}
-            )
-        ){ backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username") ?: ""
-            val email = backStackEntry.arguments?.getString("email") ?: ""
-
-            profileSideBar(username = username, email= email, userViewModel, navController)
+        composable(route = NavigationState.Profile.route){
+            profileSideBar(userViewModel, navController)
         }
         composable(NavigationState.AddRecipe.route){
             if (user != null) {

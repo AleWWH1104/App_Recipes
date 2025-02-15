@@ -5,14 +5,11 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
-import com.my_recipes_app.recipes_app.database.ingredients.IngredientEntity
 import com.my_recipes_app.recipes_app.database.recipes.RecipeEntity
 import com.my_recipes_app.recipes_app.database.recipes.UsersWithRecipes
-import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.recipes.repository.RecipesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -32,9 +29,6 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
 
     private val _recipesByTime = MutableLiveData<List<RecipeEntity>>()
     val recipesByTime: LiveData<List<RecipeEntity>> = _recipesByTime
-
-    private val _ingredients = MutableLiveData<List<IngredientEntity>>()
-    val ingredients: LiveData<List<IngredientEntity>> = _ingredients
 
     private val _recipeCount = MutableLiveData<Int>()
     val recipeCount: LiveData<Int> = _recipeCount
@@ -73,7 +67,7 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
     }
 
     fun insertRecipe(userId: Int, name: String, time: String, isFavorite: Boolean, image: String?, description: String) {
-        if (validateInputs(name, description, time)) {
+        if (validateInputs(name, time, description)) {
             viewModelScope.launch {
                 val newRecipe = RecipeEntity(
                     recipeId = 0,
@@ -139,30 +133,8 @@ class RecipeViewModel(private val repository: RecipesRepository, application: Ap
         }
     }
 
-    fun fetchIngredientsByRecipe(recipeId: Int) {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val ingredients = repository.getIngredientsForRecipe(recipeId)
-                _ingredients.postValue(ingredients)
-                Log.d("RecipeViewModel", "Ingredients loaded")
-            } catch (e: Exception) {
-                Log.e("RecipeViewModel", "Error fetching ingredients", e)
-            } finally {
-                _isLoading.postValue(false)
-            }
-        }
-    }
-
-    fun insertIngredient(ingredient: IngredientEntity) {
-        viewModelScope.launch {
-            repository.insertIngredientInEntity(ingredient)
-            fetchIngredientsByRecipe(ingredient.recipeOwnerId)
-        }
-    }
-
-    private fun validateInputs(recipeName: String, description: String, time: String): Boolean {
-        if (recipeName.isBlank() || description.isBlank() || time.isBlank()) {
+    private fun validateInputs(recipeName: String, time: String, description: String): Boolean {
+        if (recipeName.isBlank() || time.isBlank() || description.isBlank()) {
             _errorMessage.value = "Todos los campos son obligatorios"
             return false
         }

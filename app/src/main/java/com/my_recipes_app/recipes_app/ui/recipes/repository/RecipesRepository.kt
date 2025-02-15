@@ -1,13 +1,10 @@
 package com.my_recipes_app.recipes_app.ui.recipes.repository
 
-import com.my_recipes_app.recipes_app.database.ingredients.IngredientDAO
-import com.my_recipes_app.recipes_app.database.ingredients.IngredientEntity
 import com.my_recipes_app.recipes_app.database.recipes.RecipeEntity
 import com.my_recipes_app.recipes_app.database.recipes.RecipesDAO
 import com.my_recipes_app.recipes_app.database.recipes.UsersWithRecipes
-import kotlinx.coroutines.flow.Flow
 
-class RecipesRepository(private val recipesDAO: RecipesDAO, private val ingredientDAO: IngredientDAO) {
+class RecipesRepository(private val recipesDAO: RecipesDAO) {
     fun getUsersRecipes(userId: Int): List<UsersWithRecipes>{
         return recipesDAO.getUserWithRecipes(userId)
     }
@@ -44,12 +41,5 @@ class RecipesRepository(private val recipesDAO: RecipesDAO, private val ingredie
         return recipesDAO.getRecipeCountByUser(userId)
     }
 
-    fun getIngredientsForRecipe(recipeId: Int): List<IngredientEntity>{
-        return ingredientDAO.getIngredientsForRecipe(recipeId)
-    }
-
-    suspend fun insertIngredientInEntity(ingredient: IngredientEntity){
-        return ingredientDAO.insertIngredient(ingredient)
-    }
 
 }

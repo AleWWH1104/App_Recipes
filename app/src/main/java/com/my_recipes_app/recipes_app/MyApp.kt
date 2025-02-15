@@ -24,6 +24,6 @@ class MyApp: Application() {
             applicationContext, AppDataBase::class.java, "recipesAppDatabase").build()
 
         userRepository= UsersRepository(database.getUserDao())
-        recipeRepository= RecipesRepository(database.getRecipeDao(), database.getIngredientDao())
+        recipeRepository= RecipesRepository(database.getRecipeDao())
     }
 }

@@ -2,14 +2,19 @@ package com.my_recipes_app.recipes_app.ui.account.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.my_recipes_app.recipes_app.MainActivity
 import com.my_recipes_app.recipes_app.database.users.UserEntity
 import com.my_recipes_app.recipes_app.ui.account.repository.UsersRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserViewModel(private val repository: UsersRepository, application: Application): AndroidViewModel(application) {
 
@@ -21,6 +26,9 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
 
     private val sharedPreferences = application.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
+    init {
+        checkSession()
+    }
     fun signIn(email: String, password: String){
         if (email.isBlank() || password.isBlank()){
             _errorMessage.value = "Los campos no pueden estar vacios"
@@ -29,9 +37,9 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
         viewModelScope.launch {
             val userExist = repository.getUserFromEntity(email, password)
             if (userExist != null){
-                _user.value = userExist
+                _user.postValue(userExist)
                 saveSession(userExist)
-                _errorMessage.value = null
+                _errorMessage.postValue(null)
             } else{
                 _errorMessage.value = "Email o contraseña incorrectos"
             }
@@ -39,34 +47,41 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
     }
 
     fun signUp(username: String, email: String, password: String){
-        if (validateInputs(username, email, password)){
-            viewModelScope.launch {
+        if (username.isBlank() || email.isBlank() || password.isBlank()) {
+            _errorMessage.value = "Todos los campos son obligatorios"
+            return
+        }
+        viewModelScope.launch {
+            try {
                 val newUser = UserEntity(username = username, email = email, password = password)
                 val userId = repository.insertUserInEntity(newUser).toInt()
                 val registeredUser = UserEntity(userId, username, email, password)
-                _user.postValue(registeredUser)
                 saveSession(registeredUser)
+                _user.postValue(registeredUser)
                 _errorMessage.postValue(null)
+            } catch (e: Exception) {
+                _errorMessage.postValue("Error al registrar usuario")
             }
         }
     }
 
     fun logOut(){
-        clearSession()
-        _user.value = null
+        viewModelScope.launch {
+            clearSession()
+            _user.postValue(null)
+            delay(100)
+            restartApp()
+        }
     }
 
     fun deleteAccount(){
         viewModelScope.launch {
             _user.value?.let { user ->
                 repository.deleteUserInEntity(user)
-                val userCheck = repository.getUserFromEntity(user.email, user.password)
-                if (userCheck == null) {
-                    clearSession()
-                    _user.postValue(null)
-                } else {
-                    Log.e("DeleteAccount", "El usuario aún existe en la base de datos")
-                }
+                clearSession()
+                _user.postValue(null)
+                delay(100)
+                restartApp()
             }
         }
     }
@@ -98,9 +113,13 @@ class UserViewModel(private val repository: UsersRepository, application: Applic
 
     fun checkSession(){
         val currentUser = getSession()  // Recupera la sesión guardada
-        if (currentUser != null) {
-            _user.value = currentUser  // Si la sesión está activa, actualiza el usuario en el ViewModel
-        }
+        _user.postValue(currentUser)
+    }
+
+    private fun restartApp() {
+        val intent = Intent(getApplication(), MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        getApplication<Application>().startActivity(intent)
     }
 
     private fun validateInputs(username: String, email: String, password: String): Boolean{

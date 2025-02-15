@@ -7,6 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +20,9 @@ import com.my_recipes_app.recipes_app.navegacion.NavigationState
 import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
 
 @Composable
-fun profileSideBar(username: String,email: String, viewModel: UserViewModel, navController: NavController){
+fun profileSideBar(viewModel: UserViewModel, navController: NavController){
+    val user by viewModel.user.observeAsState()
+    val username = user?.username ?: "Invitado"
 
     Column(
         modifier = Modifier
@@ -38,7 +42,7 @@ fun profileSideBar(username: String,email: String, viewModel: UserViewModel, nav
             Text(text = username, style = MaterialTheme.typography.bodyMedium)
         }
         Column (
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(bottom=50.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Row(
@@ -48,7 +52,9 @@ fun profileSideBar(username: String,email: String, viewModel: UserViewModel, nav
                     .padding(vertical = 4.dp)
                     .clickable {
                         viewModel.logOut()
-                        navController.navigate(NavigationState.signIn.route)
+                        navController.navigate(NavigationState.signIn.route){
+                            popUpTo(0)
+                        }
                     }
             ) {
                 Icon(
@@ -66,7 +72,9 @@ fun profileSideBar(username: String,email: String, viewModel: UserViewModel, nav
                     .padding(vertical = 4.dp)
                     .clickable {
                         viewModel.deleteAccount()
-                        navController.navigate(NavigationState.signUp.route)
+                        navController.navigate(NavigationState.signUp.route){
+                            popUpTo(0)
+                        }
                     }
             ) {
                 Icon(

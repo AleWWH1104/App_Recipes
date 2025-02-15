@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,6 +20,9 @@ import com.my_recipes_app.recipes_app.navegacion.NavigationState
 import com.my_recipes_app.recipes_app.ui.account.viewmodel.UserViewModel
 import com.my_recipes_app.recipes_app.ui.recipes.viewmodel.RecipeViewModel
 import com.my_recipes_app.recipes_app.ui.theme.Recipes_AppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,11 +34,16 @@ class MainActivity : ComponentActivity() {
         val userViewModel: UserViewModel = UserViewModel(userRepository, application)
         val recipeViewModel: RecipeViewModel = RecipeViewModel(recipeRepository, application)
 
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.insertDefaultUser()
+        }
+
         userViewModel.checkSession()
-        val user = userViewModel.getSession()
+
         setContent {
             Recipes_AppTheme {
                 val navController = rememberNavController()
+                val user by userViewModel.user.observeAsState()
 
                 val startDestination = if (user != null){
                     NavigationState.Home.route

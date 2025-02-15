@@ -40,7 +40,7 @@ fun topAppBar(navController: NavController, user: UserEntity, enable : Boolean){
                 )
             }
         }
-        IconButton(onClick = {navController.navigate(NavigationState.Profile.createRoute(user.username, user.email) )}) {
+        IconButton(onClick = {navController.navigate(NavigationState.Profile.route )}) {
             Icon(imageVector = Icons.Filled.Menu, contentDescription = "menu", modifier = Modifier.size(50.dp), tint = Color.White)
         }
     }

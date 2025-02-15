@@ -94,7 +94,7 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity, recipeId:
                     },
                     contentDescription = "Recipe Image",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.FillWidth
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))
@@ -105,7 +105,7 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity, recipeId:
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Text(text = stringResource(id = R.string.preparation_time) + "${recipe?.time ?: 0}", style = MaterialTheme.typography.labelLarge)
+                Text(text = stringResource(id = R.string.preparation_time) + " ${recipe?.time ?: 0}", style = MaterialTheme.typography.labelLarge)
                 Icon(
                     imageVector = if (isFavoriteState) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "fav icon",
@@ -115,10 +115,8 @@ fun detailRecipeScreen(navController: NavController, user: UserEntity, recipeId:
                 )
             }
             Column(modifier = Modifier.fillMaxWidth().padding(20.dp).weight(1f),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(id = R.string.all_ingredients), style = MaterialTheme.typography.bodyLarge )
-                Text(text = "Ingrediente 1", style = MaterialTheme.typography.bodySmall )
                 Text(text = stringResource(id = R.string.preparation_recipe), style = MaterialTheme.typography.bodyLarge )
                 Text(text = recipe?.description ?: "", style = MaterialTheme.typography.bodySmall )
             }
