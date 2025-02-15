@@ -1,7 +1,3 @@
-Aquí tienes un README atractivo y bien estructurado para tu aplicación de recetas.  
-
----
-
 # **My Recipes App**  
 
 ## **Descripción**  
